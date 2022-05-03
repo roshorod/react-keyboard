@@ -15,8 +15,8 @@
         "main": "apps/lab4/src/main.tsx",
         "polyfills": "apps/lab4/src/polyfills.ts",
         "tsConfig": "apps/lab4/tsconfig.app.json",
-        "assets": ["apps/lab4/src/favicon.ico", "apps/lab4/src/assets"],
-        "styles": [],
+        "assets": ["apps/lab4/src/favicon.ico", "apps/lab4/src/assets/edit-outline.svg"],
+        "styles": ["apps/lab4/src/style.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },

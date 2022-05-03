@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+}
+
+.btn-space {
+    width: 321px !important;
+}
+
+.btn-tab {
+    width: 95px !important;
+}
+
+.btn-caps-lock {
+    width: 105px !important;
+}
+
+.btn-shift {
+    width: 122px !important;
+}
+
+.btn-ctrl {
+    width: 71px !important;
+}
+
+.btn-win {
+    width: 70px !important;
+}
+
+.btn-alt {
+    width: 70px !important;
+}
+
+.btn-options {
+    width: 70px !important;
+}
+
+.btn-enter {
+    width: 85px !important;
+}
+
+.btn-dash {
+    width: 95px !important;
+}
+
+.btn-tilda {
+    width: 80px !important;
+}
+
+.btn-backspace {
+    width: 140px !important;
+}
+
+.btn-f1 {
+    margin-left: 43px;
+}
+
+.btn-f5 {
+    margin-left: 40px;
+}
+
+.btn-f9 {
+    margin-left: 40px;
+}
+
+.btn-logo {
+    width: 70px !important;
+}
+
+* {
+    box-sizing: border-box;
+}
