@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { SelectGroup } from "./select-group";
 
-const initialState: Group = {
-    name: "test",
-    color: "white"
-};
+const initialState: Group = { name: '', color: ''};
 
 const groupSlice = createSlice({
     name: 'group',
@@ -11,9 +9,9 @@ const groupSlice = createSlice({
     initialState: initialState,
 
     reducers:  {
+        selectGroup: (state, action) => SelectGroup(state, action.payload)
     }
 });
 
-
-export const {  } = groupSlice.actions;
+export const {  selectGroup } = groupSlice.actions;
 export const { reducer } = groupSlice;

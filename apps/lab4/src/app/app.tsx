@@ -1,11 +1,17 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { State } from "./store";
+import store, { State } from "./store";
 
 import Keyboard from "./components/keyboard";
 import styled from "styled-components";
 import ToolBox from "./components/toolbox";
 import Group from "./components/group";
+
+import { Group as g } from "./common/group";
+
+import { SketchPicker, ChromePicker } from 'react-color';
+import { useEffect, useState } from "react";
+import { Profile } from "./common/profile";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -51,15 +57,29 @@ const Groups = styled.aside`
 `;
 
 const ColorPicker = styled.div`
-  height: 250px;
-
-  background: white;
+  display: flex;
+  justify-content: center;
 
   padding: 10px;
 `;
 
 function App() {
+  const dispatch = useDispatch();
+
   const layout = useSelector((state: State) => state.layout);
+  const group = useSelector((state: State) => state.group);
+
+  const [color, setColor] = useState();
+
+  useEffect(() => {
+    if(group?.color) {
+      const payload = {...group, color};
+
+      dispatch(g.selectGroup(payload));
+      dispatch(Profile.updateGroup(payload));
+    }
+
+  }, [color]);
 
   return (
     <AppWrapper>
@@ -68,7 +88,9 @@ function App() {
       </Profiles>
       <Groups>
         <Group />
-        <ColorPicker><h1>Color picker</h1></ColorPicker>
+        <ColorPicker>
+          <ChromePicker color={color} onChange={(color) => setColor(color.hex)}></ChromePicker>
+        </ColorPicker>
       </Groups>
       <Center>
         <ToolBox></ToolBox>

@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
+
 import { Profile } from "../common/profile"; 
+import { Group as g } from "../common/group";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -60,6 +62,10 @@ const GroupItem = styled.div`
         color: white;
         border: 3px solid #4f4b4b !important;
     }
+
+    > .group-name {
+        overflow: scroll;
+    }
 `;
 
 
@@ -101,6 +107,7 @@ const Group = () => {
     const stopEdit = () => {
         setEditable(false);
         updateGroup(selected);
+        dispatch(g.selectGroup(selected));
     }
 
     return (
@@ -110,19 +117,34 @@ const Group = () => {
             </GroupHeader>
             <GroupItems>
                 {group.map((item, index) => {
+                    console.log(item)
                     return (               
-                        <GroupItem key={index}>
+                        <GroupItem 
+                            onClick={() => {
+                                setSelected(item);
+                                dispatch(g.selectGroup(item));
+                            }}
+                            key={index}
+                            className={item.id == selected.id ? 'group-selected' : ''}
+                        >
+
+                            <span className="group-color" style={{background: item.color}}></span>
+
                             {editable && selected.id == item.id ?
                                     <input className="group-editable"
                                         ref={editableInput}
                                         type="text"
                                         value={selected.name} 
-                                        onChange={(e) => setSelected({...selected, name: e.target.value})}
+                                        onChange={(e) => {
+                                         e.preventDefault() 
+                                         setSelected({...selected, name: e.target.value})
+                                        }}
                                         onBlur={() => stopEdit()}
                                     />
                                 : 
-                                    <span onClick={() => startEdit(item)}>{item.name}</span>
+                                    <span className="group-name" onClick={() => startEdit(item)}>{item.name}</span>
                             }
+
                             <img src={del} onClick={() => deleteGroup(item)} />
                         </GroupItem>
                     );

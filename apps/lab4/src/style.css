@@ -90,3 +90,23 @@ body {
 
     border: 3px solid #4f4b4b !important;
 }
+
+.chrome-picker {
+    background: #4f4b4b !important;
+}
+
+.group-color {
+    width: 20px;
+    height: 20px;
+
+    border-radius: 5px;
+}
+
+.group-selected {
+    border: 3px solid #546e47 !important;
+}
+
+#rc-editable-input-2 {
+    background: #4f4b4b;
+    color: white !important;
+}
