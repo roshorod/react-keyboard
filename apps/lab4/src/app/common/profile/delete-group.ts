@@ -1,4 +1,3 @@
-import { PayloadAction } from "@reduxjs/toolkit";
 
 export const DeleteGroup = (state: Profile, group: Group)  =>  {
     const filtered = state.groups.filter(groups => groups.id != group.id);

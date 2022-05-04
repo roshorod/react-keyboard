@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CreateGroup } from "./create-group";
 import { DeleteGroup } from "./delete-group";
+import { UpdateGroup } from "./update-group";
 
 const initialStateMap: Profile = {
     name: 'profile-one',
@@ -19,9 +20,10 @@ const profileSlice = createSlice({
         },
 
         createGroup: (state, action) => { CreateGroup(state, action.payload) },
-        deleteGroup: (state, action) => { DeleteGroup(state, action.payload) }
+        deleteGroup: (state, action) => { DeleteGroup(state, action.payload) },
+        updateGroup: (state, action) => { UpdateGroup(state, action.payload) }
     }
 });
 
-export const { initLayout, createGroup, deleteGroup } = profileSlice.actions;
+export const { initLayout, createGroup, deleteGroup, updateGroup } = profileSlice.actions;
 export const { reducer } = profileSlice;

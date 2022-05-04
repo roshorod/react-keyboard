@@ -38,12 +38,24 @@ const Profiles = styled.section`
 `;
 
 const Groups = styled.aside`
+  display: flex;
+
+  flex-direction: column;
+
   grid-row-start: 1;
   grid-row-end: 3;
 
   grid-colum: 1;
 
   background: #2b2b2b;
+`;
+
+const ColorPicker = styled.div`
+  height: 250px;
+
+  background: white;
+
+  padding: 10px;
 `;
 
 function App() {
@@ -56,6 +68,7 @@ function App() {
       </Profiles>
       <Groups>
         <Group />
+        <ColorPicker><h1>Color picker</h1></ColorPicker>
       </Groups>
       <Center>
         <ToolBox></ToolBox>

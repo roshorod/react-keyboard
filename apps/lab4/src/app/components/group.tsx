@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import del from '../../assets/trash-2-outline.svg';
 import add from '../../assets/plus-outline.svg';
+import { useEffect, useRef, useState } from "react";
 
 
 const GroupWrapper = styled.div`
@@ -17,6 +18,8 @@ const GroupWrapper = styled.div`
 
     width: 100%;
     height: 100%;
+
+    overflow: scroll;
 `;
 
 const GroupHeader = styled.section`
@@ -50,21 +53,55 @@ const GroupItem = styled.div`
         filter: invert(99%) sepia(3%) saturate(614%) hue-rotate(329deg) brightness(117%) contrast(100%);
         cursor: pointer;
     }
+
+    > input {
+        width: 120px;
+        background: none;
+        color: white;
+        border: 3px solid #4f4b4b !important;
+    }
 `;
 
 
 const Group = () => {
     const dispatch = useDispatch();
 
+    const [editable, setEditable] = useState(true);
+    const [selected, setSelected] = useState<Group>();
+
+    const editableInput = useRef(null);
+
     const group = useSelector((state: State)  => state.profile.groups);
 
+    useEffect(() => {
+        if(editableInput?.current)
+            editableInput.current.focus();
+    }, [selected, editable]);
+
     const createGroup = () => {
-        const payload = {color: 'white', name: "new group", id: uuidv4()}
-        
+        const payload: Group = {color: 'white', name: "new group", id: uuidv4()}
+
+        setSelected(payload);
+        setEditable(true);
+
         dispatch(Profile.createGroup({...payload}));
     };
 
-    const deleteGroup = (group: Group) => dispatch(Profile.deleteGroup({...group}))
+    const deleteGroup = (group: Group) => dispatch(Profile.deleteGroup({...group}));
+
+    const updateGroup = (group: Group) => {
+        dispatch(Profile.updateGroup(group))
+    };
+
+    const startEdit = (group: Group) => {
+        setSelected(group);
+        setEditable(true);
+    };
+
+    const stopEdit = () => {
+        setEditable(false);
+        updateGroup(selected);
+    }
 
     return (
         <GroupWrapper>
@@ -75,7 +112,17 @@ const Group = () => {
                 {group.map((item, index) => {
                     return (               
                         <GroupItem key={index}>
-                            <span>{item.name}</span>
+                            {editable && selected.id == item.id ?
+                                    <input className="group-editable"
+                                        ref={editableInput}
+                                        type="text"
+                                        value={selected.name} 
+                                        onChange={(e) => setSelected({...selected, name: e.target.value})}
+                                        onBlur={() => stopEdit()}
+                                    />
+                                : 
+                                    <span onClick={() => startEdit(item)}>{item.name}</span>
+                            }
                             <img src={del} onClick={() => deleteGroup(item)} />
                         </GroupItem>
                     );
