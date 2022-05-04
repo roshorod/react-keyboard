@@ -5,6 +5,7 @@ import { State } from "./store";
 import Keyboard from "./components/keyboard";
 import styled from "styled-components";
 import ToolBox from "./components/toolbox";
+import Group from "./components/group";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -54,7 +55,7 @@ function App() {
 
       </Profiles>
       <Groups>
-
+        <Group />
       </Groups>
       <Center>
         <ToolBox></ToolBox>

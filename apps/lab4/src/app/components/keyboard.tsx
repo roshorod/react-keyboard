@@ -41,6 +41,8 @@ const KeyboardBtn = styled.button`
 const Keyboard = (props: { layout: any[][] }) => {
   const [layout] = useState(props.layout);
 
+  // When enter on key select group color and change it on key signature
+
   return (
     <KeyboardWrapper>
       {layout.map((keyRow, index) => (

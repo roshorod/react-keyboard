@@ -3,6 +3,7 @@ import styled from "styled-components";
 import edit from '../../assets/edit-outline.svg';
 import pen from '../../assets/brush-outline.svg';
 import del from '../../assets/trash-2-outline.svg';
+import { useState } from "react";
 
 const ToolBoxWrapper = styled.div`
     display: flex;
@@ -27,15 +28,44 @@ const ToolBoxWrapper = styled.div`
     }
 `;
 
+enum EditorMode {
+    Edit,
+    Draw,
+    Delete
+};
+
+interface ToolBoxItem {
+    image: string;
+    mode: EditorMode;
+};
+
+const ToolBoxItems: ToolBoxItem[] = [
+    { image: edit, mode: EditorMode.Edit },
+    { image: pen, mode: EditorMode.Draw },
+    { image: del, mode: EditorMode.Delete },
+];
+
 const ToolBox = () => {
+    const [items] = useState(ToolBoxItems);
+    const [mode, setMode] = useState(EditorMode.Edit);
+
+    const changeModeClick = (mode: EditorMode) => {
+        setMode(mode);
+    }
+
     return ( 
         <ToolBoxWrapper>
-            <img src={edit} />
-            <img src={pen} />
-            <img src={del} />
+            {items.map((item: ToolBoxItem, idx) => {
+                return (
+                    <img key={idx} 
+                        src={item.image} 
+                        className={mode === item.mode ? 'active' : ''} 
+                        onClick={() => changeModeClick(item.mode)}
+                    />
+                );
+            })}
         </ToolBoxWrapper>
     );
 };
-
 
 export default ToolBox;

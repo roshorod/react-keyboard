@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const button = (name: string, className = 'btn-regular') =>
-  Object({ name, className });
+const button = (name: string, className = 'btn-regular', selected = false) =>
+  Object({ name, className, selected });
 
 const layout = [
   [button('LoGo', 'btn-logo'),
