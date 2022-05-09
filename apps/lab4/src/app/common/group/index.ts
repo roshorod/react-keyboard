@@ -1,2 +1,1 @@
-
-export * as Group from './groupSlice';
+export * as Group from "./groupSlice";

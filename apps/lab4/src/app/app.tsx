@@ -6,14 +6,16 @@ import Keyboard from "./components/keyboard";
 import styled from "styled-components";
 import ToolBox from "./components/toolbox";
 import Group from "./components/group";
+import Profile from "./components/profile";
 
-import { Group as g } from "./common/group";
+import { Group as G } from "./common/group";
 
-import * as Layout from "./layouts";
+import * as L from "./layouts";
 
-import { ChromePicker } from 'react-color';
+import { ChromePicker } from "react-color";
 import { useEffect, useState } from "react";
-import { Profile } from "./common/profile";
+import { Profile as P, ProfileList as PL } from "./common/profile";
+
 
 const AppWrapper = styled.div`
   display: grid;
@@ -22,7 +24,7 @@ const AppWrapper = styled.div`
   grid-template-rows: 5vh 5fr;
 
   width: 100%;
-  height: 100vh
+  height: 100vh;
 `;
 
 const Center = styled.main`
@@ -61,48 +63,56 @@ const Groups = styled.aside`
 const ColorPicker = styled.div`
   display: flex;
   justify-content: center;
-
-  padding: 10px;
 `;
 
 function App() {
-  let mount = true;
-
   const dispatch = useDispatch();
 
   const layout = useSelector((state: State) => state.layout);
 
   const group = useSelector((state: State) => state.group);
 
+  const profile = useSelector((state: State) => state.profile);
+
   const [color, setColor] = useState();
 
   useEffect(() => {
-    if(group?.color) {
-      const payload = {...group, color};
+    if (group?.color) {
+      const payload = { ...group, color };
 
-      dispatch(g.selectGroup(payload));
-      dispatch(Profile.updateGroup(payload));
+      dispatch(G.selectGroup(payload));
+      dispatch(P.updateGroup(payload));
     }
   }, [color]);
 
   useEffect(() => {
-    console.log(group);
-    dispatch(Layout.syncLayout(group));
+    dispatch(L.syncLayout(group));
+    dispatch(P.updateLayout(layout));
   }, [group]);
+
+  useEffect(() => {
+    dispatch(PL.updateProfiles(profile));
+  }, [profile]);
 
   return (
     <AppWrapper>
       <Profiles>
-
+        <Profile profile={profile} />
       </Profiles>
+
       <Groups>
         <Group />
         <ColorPicker>
-          <ChromePicker color={color} onChange={(color) => setColor(color.hex)}></ChromePicker>
+          <ChromePicker
+            color={color}
+            onChange={(color) => setColor(color.hex)}
+          />
         </ColorPicker>
       </Groups>
+
       <Center>
         <ToolBox></ToolBox>
+
         <Keyboard layout={layout} />
       </Center>
     </AppWrapper>

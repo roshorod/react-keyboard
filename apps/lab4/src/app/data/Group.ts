@@ -1,8 +1,7 @@
-
 interface Group {
-    id?: string;
-    name: string;
-    color: string;
+  id?: string;
+  name: string;
+  color: string;
 
-    groupKeys?: Key[];
+  groupKeys?: Key[];
 }

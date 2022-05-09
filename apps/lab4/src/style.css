@@ -2,6 +2,10 @@ body {
     margin: 0;
 }
 
+* {
+    user-select: none;
+}
+
 .btn-space {
     width: 321px !important;
 }
@@ -92,7 +96,8 @@ body {
 }
 
 .chrome-picker {
-    background: #4f4b4b !important;
+    background: #2b2b2b !important;
+    width: 100% !important;
 }
 
 .group-color {
@@ -107,6 +112,7 @@ body {
 }
 
 #rc-editable-input-2 {
-    background: #4f4b4b;
+    background: #2b2b2b;
     color: white !important;
+    box-shadow: none !important;
 }
