@@ -9,7 +9,9 @@ import Group from "./components/group";
 
 import { Group as g } from "./common/group";
 
-import { SketchPicker, ChromePicker } from 'react-color';
+import * as Layout from "./layouts";
+
+import { ChromePicker } from 'react-color';
 import { useEffect, useState } from "react";
 import { Profile } from "./common/profile";
 
@@ -64,9 +66,12 @@ const ColorPicker = styled.div`
 `;
 
 function App() {
+  let mount = true;
+
   const dispatch = useDispatch();
 
   const layout = useSelector((state: State) => state.layout);
+
   const group = useSelector((state: State) => state.group);
 
   const [color, setColor] = useState();
@@ -78,8 +83,12 @@ function App() {
       dispatch(g.selectGroup(payload));
       dispatch(Profile.updateGroup(payload));
     }
-
   }, [color]);
+
+  useEffect(() => {
+    console.log(group);
+    dispatch(Layout.syncLayout(group));
+  }, [group]);
 
   return (
     <AppWrapper>

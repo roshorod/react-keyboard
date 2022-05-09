@@ -2,14 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
 
-import { Profile } from "../common/profile"; 
-import { Group as g } from "../common/group";
+import { Profile as P } from "../common/profile";
+import { Group as G } from "../common/group";
 
 import { v4 as uuidv4 } from 'uuid';
 
 import del from '../../assets/trash-2-outline.svg';
 import add from '../../assets/plus-outline.svg';
 import { useEffect, useRef, useState } from "react";
+import { updateGroup } from "../common/profile/profileSlice";
 
 
 const GroupWrapper = styled.div`
@@ -73,11 +74,11 @@ const Group = () => {
     const dispatch = useDispatch();
 
     const [editable, setEditable] = useState(true);
-    const [selected, setSelected] = useState<Group>();
 
     const editableInput = useRef(null);
 
-    const group = useSelector((state: State)  => state.profile.groups);
+    const groups = useSelector((state: State)  => state.profile.groups);
+    const selected = useSelector((state: State) => state.group);
 
     useEffect(() => {
         if(editableInput?.current)
@@ -85,30 +86,28 @@ const Group = () => {
     }, [selected, editable]);
 
     const createGroup = () => {
-        const payload: Group = {color: 'white', name: "new group", id: uuidv4()}
+        const payload: Group = {color: 'white', name: "new group", id: uuidv4(), groupKeys: []};
 
-        setSelected(payload);
+        dispatch(G.selectGroup(payload));
+        dispatch(P.createGroup(payload));
+
         setEditable(true);
-
-        dispatch(Profile.createGroup({...payload}));
     };
 
-    const deleteGroup = (group: Group) => dispatch(Profile.deleteGroup({...group}));
+    const deleteGroup = (group: Group) => dispatch(P.deleteGroup(group));
 
-    const updateGroup = (group: Group) => {
-        dispatch(Profile.updateGroup(group))
-    };
-
-    const startEdit = (group: Group) => {
-        setSelected(group);
+    const startEdit = () => {
         setEditable(true);
     };
 
     const stopEdit = () => {
         setEditable(false);
-        updateGroup(selected);
-        dispatch(g.selectGroup(selected));
     }
+
+    const selectGroup = (group: Group) => {
+        dispatch(P.updateGroup(selected));
+        dispatch(G.selectGroup(group));
+    };
 
     return (
         <GroupWrapper>
@@ -116,14 +115,10 @@ const Group = () => {
                 <h1>Group</h1>
             </GroupHeader>
             <GroupItems>
-                {group.map((item, index) => {
-                    console.log(item)
-                    return (               
-                        <GroupItem 
-                            onClick={() => {
-                                setSelected(item);
-                                dispatch(g.selectGroup(item));
-                            }}
+                {groups.map((item, index) => {
+                    return (
+                        <GroupItem
+                            onClick={() => selectGroup(item)}
                             key={index}
                             className={item.id == selected.id ? 'group-selected' : ''}
                         >
@@ -134,15 +129,16 @@ const Group = () => {
                                     <input className="group-editable"
                                         ref={editableInput}
                                         type="text"
-                                        value={selected.name} 
+                                        value={selected.name}
                                         onChange={(e) => {
-                                         e.preventDefault() 
-                                         setSelected({...selected, name: e.target.value})
+                                         e.preventDefault()
+
+                                         dispatch(G.selectGroup({...selected, name: e.target.value}));
                                         }}
                                         onBlur={() => stopEdit()}
                                     />
-                                : 
-                                    <span className="group-name" onClick={() => startEdit(item)}>{item.name}</span>
+                                :
+                                    <span className="group-name" onClick={() => startEdit()}>{item.name}</span>
                             }
 
                             <img src={del} onClick={() => deleteGroup(item)} />

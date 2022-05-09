@@ -1,9 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { map } from "cheerio/lib/api/traversing";
+import { v4 as uuidv4 } from 'uuid';
 
-const button = (name: string, className = 'btn-regular', selected = false) =>
-  Object({ name, className, selected });
 
-const layout = [
+const button = (name: string, className = 'btn-regular' ): Key =>
+  Object({ name, className, id: uuidv4() });
+
+const layout: Key[][] = [
   [button('LoGo', 'btn-logo'),
     button('F1', 'btn-f1'),
     button('F2'),
@@ -92,7 +95,42 @@ const layout = [
 const layoutSlice = createSlice({
   name: 'layout',
   initialState: layout,
-  reducers: {}
+  reducers: {
+    updateLayout: (state, action: PayloadAction<Key>) => {
+        const id = action.payload.id;
+
+        const newMap = state.map(row => {
+          return row.map(key => {
+            if (key.id === id)
+              return action.payload;
+            else return key;
+          });
+        });
+
+        Object.assign(state, newMap);
+    },
+
+    syncLayout: (state, action: PayloadAction<Group>) => {
+      const groupKeys = action.payload.groupKeys;
+      const color = action.payload.color;
+
+      let map;
+
+      if(groupKeys.length !== 0) {
+        map = state.map(row => row.map(key => {
+          let found = false;
+
+          groupKeys.forEach(keyInGroup => keyInGroup.id === key.id ? found = true : false);
+
+          return found ? { ...key, color } : key;
+        }));
+
+         Object.assign(state, map)
+      }
+
+    }
+  }
 });
 
+export const { updateLayout, syncLayout } = layoutSlice.actions;
 export const { reducer } = layoutSlice;
