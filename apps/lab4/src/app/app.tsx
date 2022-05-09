@@ -68,7 +68,7 @@ const ColorPicker = styled.div`
 function App() {
   const dispatch = useDispatch();
 
-  const layout = useSelector((state: State) => state.layout);
+  const layout = useSelector((state: State) => state.profile.layout);
 
   const group = useSelector((state: State) => state.group);
 
@@ -82,12 +82,13 @@ function App() {
 
       dispatch(G.selectGroup(payload));
       dispatch(P.updateGroup(payload));
+      dispatch(P.syncLayout(payload));
     }
   }, [color]);
 
   useEffect(() => {
-    dispatch(L.syncLayout(group));
     dispatch(P.updateLayout(layout));
+    dispatch(P.syncLayout(group));
   }, [group]);
 
   useEffect(() => {

@@ -45,19 +45,25 @@ const KeyboardBtn = styled.button`
   border-radius: 5px;
 `;
 
-const Keyboard = (props: { layout: Key[][] }) => {
+interface Props {
+  layout: Key[][];
+}
+
+const Keyboard = (props: Props) => {
   const dispatch = useDispatch();
 
   const group = useSelector((state: State) => state.group);
 
   const addKeyToGroup = (key: Key) => {
+    console.log(key);
+
     if (key.selected) return;
 
-    const payload = { ...key, selected: true, color: group.color };
+    const payload: Key = { ...key, selected: true, color: group.color };
 
     dispatch(Group.addKeyGroup(payload));
-    dispatch(Layout.updateLayout(payload));
     dispatch(Profile.updateGroup(group));
+    dispatch(Profile.syncLayout(group));
   };
 
   return (

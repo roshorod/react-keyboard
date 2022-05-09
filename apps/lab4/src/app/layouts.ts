@@ -1,8 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
 const button = (name: string, className = "btn-regular"): Key =>
-  Object({ name, className, id: uuidv4() });
+  <Key>{ name, className, id: uuidv4(), selected: false };
 
 const layout: Key[][] = [
   [
@@ -100,53 +99,4 @@ const layout: Key[][] = [
   ],
 ];
 
-const preload: Key[][] = localStorage.getItem("reduxState")
-  ? JSON.parse(localStorage.getItem("reduxState")).layout
-  : layout;
-
-
-const layoutSlice = createSlice({
-  name: "layout",
-  initialState: preload,
-  reducers: {
-    updateLayout: (state, action: PayloadAction<Key>) => {
-      const id = action.payload.id;
-
-      const newMap = state.map((row) => {
-        return row.map((key) => {
-          if (key.id === id) return action.payload;
-          else return key;
-        });
-      });
-
-      Object.assign(state, newMap);
-    },
-
-    syncLayout: (state, action: PayloadAction<Group>) => {
-      const groupKeys = action.payload.groupKeys;
-      const color = action.payload.color;
-
-      let map;
-
-      if (groupKeys.length !== 0) {
-        map = state.map((row) =>
-          row.map((key) => {
-            let found = false;
-
-            groupKeys.forEach((keyInGroup) =>
-              keyInGroup.id === key.id ? (found = true) : false
-            );
-
-            return found ? { ...key, color } : key;
-          })
-        );
-
-        Object.assign(state, map);
-      }
-    },
-  },
-});
-
-export const { updateLayout, syncLayout } = layoutSlice.actions;
-export const { reducer } = layoutSlice;
-export { layout }; 
+export { layout };

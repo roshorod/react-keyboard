@@ -1,6 +1,6 @@
 interface Profile {
   name: string;
   groups?: Group[];
-  layout?: [][];
+  layout: Key[][];
   id: number;
 }

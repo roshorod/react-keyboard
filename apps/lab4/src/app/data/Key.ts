@@ -2,6 +2,6 @@ interface Key {
   id: string;
   name: string;
   className: string;
-  selected?: boolean;
+  selected: boolean;
   color?: string;
 }

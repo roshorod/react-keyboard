@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
+import { layout } from "../../layouts";
+
 
 const initialStateMap: Profile[] = [];
 
@@ -22,7 +24,7 @@ const profileListSlice = createSlice({
     },
 
     createProfile: (state) => {
-      const signature: Profile = { id: uuidv4(), name: "profile-template", layout: [], groups: [] };
+      const signature: Profile = { id: uuidv4(), name: "profile-template", layout, groups: [] };
 
       state.push(signature);
     }

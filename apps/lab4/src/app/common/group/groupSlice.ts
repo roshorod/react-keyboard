@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { AddKeyGroup } from "./add-key-group";
-import { SelectGroup } from "./select-group";
+import { AddKeyGroup } from "./reducers/add-key-group";
+import { SelectGroup } from "./reducers/select-group";
 
 const initialStateMap: Group = { name: "", color: "", groupKeys: [] };
 
