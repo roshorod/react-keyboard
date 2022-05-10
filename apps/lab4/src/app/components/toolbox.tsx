@@ -6,7 +6,7 @@ import del from "../../assets/trash-2-outline.svg";
 import { useState } from "react";
 
 import { EditorMode } from "../data/editor-mode";
-import { ModeContext } from "../mode-context";
+import { ModeContext } from "../common/context/mode-context";
 
 const ToolBoxWrapper = styled.div`
   display: flex;

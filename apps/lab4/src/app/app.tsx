@@ -8,17 +8,14 @@ import ToolBox from "./components/toolbox";
 import Group from "./components/group";
 import Profile from "./components/profile";
 
-import * as G from "./common/group/groupSlice";
-
-import * as L from "./layouts";
-
 import { ChromePicker } from "react-color";
 import { useEffect, useState } from "react";
 import * as P from "./common/profile/profileSlice";
 import * as PL from "./common/profile/profileListSlice";
 
-import { ModeContext } from "./mode-context";
+import { ModeContext } from "./common/context/mode-context";
 import { EditorMode } from "./data/editor-mode";
+import { GroupContext } from "./common/context/group-context";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -71,58 +68,61 @@ const ColorPicker = styled.div`
 function App() {
   const dispatch = useDispatch();
 
-  const layout = useSelector((state: State) => state.profile.layout);
-
-  const group = useSelector((state: State) => state.group);
-
   const profile = useSelector((state: State) => state.profile);
 
+  const layout = useSelector((state: State) => state.profile.layout);
+
   const [color, setColor] = useState();
+
+  const [_groupId, _setGroupId] = useState<string | null>(null);
+
+  const _group = useSelector((state: State) => state.profile.groups.find(group => group.id == _groupId))
 
   const [mode, setMode] = useState<EditorMode>(EditorMode.Draw);
 
   useEffect(() => {
-    if (group?.color) {
-      const payload = { ...group, color };
-
-      dispatch(G.selectGroup(payload));
-      dispatch(P.updateGroup(payload));
-      dispatch(P.syncLayout(payload));
+    if (_groupId) {
+      dispatch(P.updateGroup({..._group, color}));
+      // dispatch(P.syncLayout())
     }
   }, [color]);
 
   useEffect(() => {
     dispatch(P.updateLayout(layout));
-    dispatch(P.syncLayout(group));
-  }, [group]);
+          // dispatch(P.syncLayout())
+  }, [_group]);
 
   useEffect(() => {
     dispatch(PL.updateProfiles(profile));
   }, [profile]);
 
   return (
-    <AppWrapper>
-      <Profiles>
-        <Profile profile={profile} />
-      </Profiles>
+    <GroupContext.Provider
+      value={{ groupId: _groupId, changeGroupId: _setGroupId }}
+    >
+      <AppWrapper>
+        <Profiles>
+          <Profile profile={profile} />
+        </Profiles>
 
-      <Groups>
-        <Group />
-        <ColorPicker>
-          <ChromePicker
-            color={color}
-            onChange={(color) => setColor(color.hex)}
-          />
-        </ColorPicker>
-      </Groups>
+        <Groups>
+          <Group />
+          <ColorPicker>
+            <ChromePicker
+              color={color}
+              onChange={(color) => setColor(color.hex)}
+            />
+          </ColorPicker>
+        </Groups>
 
-      <Center>
-        <ModeContext.Provider value={{ mode, changeMode: setMode }}>
-          <ToolBox></ToolBox>
-          <Keyboard layout={layout} />
-        </ModeContext.Provider>
-      </Center>
-    </AppWrapper>
+        <Center>
+          <ModeContext.Provider value={{ mode, changeMode: setMode }}>
+            <ToolBox></ToolBox>
+            <Keyboard layout={layout} />
+          </ModeContext.Provider>
+        </Center>
+      </AppWrapper>
+    </GroupContext.Provider>
   );
 }
 

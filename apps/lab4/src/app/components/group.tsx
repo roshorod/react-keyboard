@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { State } from "../store";
 
 import * as P from "../common/profile/profileSlice";
-import * as G from "../common/group/groupSlice";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,6 +10,7 @@ import del from "../../assets/trash-2-outline.svg";
 import add from "../../assets/plus-outline.svg";
 
 import { useEffect, useRef, useState } from "react";
+import { GroupContext } from "../common/context/group-context";
 
 const GroupWrapper = styled.div`
   display: flex;
@@ -78,11 +78,11 @@ const Group = () => {
 
   const groups = useSelector((state: State) => state.profile.groups);
 
-  const selected = useSelector((state: State) => state.group);
+  const getGroupById = (id) => groups.find((group) => group.id === id);
 
   useEffect(() => {
-    if (editableInput?.current) editableInput.current.focus();
-  }, [selected, editable]);
+  if (editableInput?.current) editableInput.current.focus();
+  }, [editable, editableInput]);
 
   const createGroup = () => {
     const payload: Group = {
@@ -92,7 +92,7 @@ const Group = () => {
       groupKeys: [],
     };
 
-    dispatch(G.selectGroup(payload));
+    // dispatch(G.selectGroup(payload));
     dispatch(P.createGroup(payload));
 
     setEditable(true);
@@ -110,64 +110,71 @@ const Group = () => {
   const stopEdit = () => {
     setEditable(false);
 
-    dispatch(P.updateGroup(selected));
+    // dispatch(P.updateGroup(selected));
   };
 
-  const selectGroup = (group: Group) => {
-    dispatch(P.updateGroup(selected));
-    dispatch(G.selectGroup(group));
+  const selectGroup = (group: Group, changeGroupId: Function) => {
+    changeGroupId(group.id);
+
+
+    // dispatch(P.updateGroup(selected));
+    // dispatch(G.selectGroup(group));
   };
 
   const onChangeGroupName = (event) => {
     event.preventDefault();
 
-    dispatch(G.selectGroup({ ...selected, name: event.target.value }));
+    // dispatch(G.selectGroup({ ...selected, name: event.target.value }));
   };
 
   return (
-    <GroupWrapper>
-      <GroupHeader>
-        <h1>Group</h1>
-      </GroupHeader>
-      <GroupItems>
-        {groups.map((item, index) => {
-          return (
-            <GroupItem
-              onClick={() => selectGroup(item)}
-              key={index}
-              className={item.id == selected.id ? "group-selected" : ""}
-            >
-              <span
-                className="group-color"
-                style={{ background: item.color }}
-              />
+    <GroupContext.Consumer>
+      {({ groupId, changeGroupId }) => (
+        <GroupWrapper>
+          <GroupHeader>
+            <h1>Group</h1>
+          </GroupHeader>
+          <GroupItems>
+            {groups.map((item, index) => {
+              return (
+                <GroupItem
+                  onClick={() => selectGroup(item, changeGroupId)}
+                  key={index}
+                  className={item.id == groupId ? "group-selected" : ""}
+                >
+                  <span
+                    className="group-color"
+                    style={{ background: item.color }}
+                  />
 
-              {editable && selected.id == item.id ? (
-                <input
-                  className="group-editable"
-                  ref={editableInput}
-                  type="text"
-                  value={selected.name}
-                  onChange={(e) => onChangeGroupName(e)}
-                  onBlur={stopEdit}
-                />
-              ) : (
-                <span className="group-name" onClick={startEdit}>
-                  {item.name}
-                </span>
-              )}
+                  {editable && groupId == item.id ? (
+                    <input
+                      className="group-editable"
+                      ref={editableInput}
+                      type="text"
+                      value={getGroupById(groupId).name}
+                      onChange={(e) => onChangeGroupName(e)}
+                      onBlur={stopEdit}
+                    />
+                  ) : (
+                    <span className="group-name" onClick={startEdit}>
+                      {item.name}
+                    </span>
+                  )}
 
-              <img src={del} onClick={() => deleteGroup(item)} />
+                  <img src={del} onClick={() => deleteGroup(item)} />
+                </GroupItem>
+              );
+            })}
+
+            <GroupItem className="group-item-new" onClick={createGroup}>
+              <span>Add new </span>
+              <img src={add} />
             </GroupItem>
-          );
-        })}
-
-        <GroupItem className="group-item-new" onClick={createGroup}>
-          <span>Add new </span>
-          <img src={add} />
-        </GroupItem>
-      </GroupItems>
-    </GroupWrapper>
+          </GroupItems>
+        </GroupWrapper>
+      )}
+    </GroupContext.Consumer>
   );
 };
 

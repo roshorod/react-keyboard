@@ -2,12 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
 
-import * as G from "../common/group/groupSlice";
 import * as P from "../common/profile/profileSlice";
 
-import { ModeContext } from "../mode-context";
+import { ModeContext } from "../common/context/mode-context";
 import { EditorMode } from "../data/editor-mode";
-import { useEffect } from "react";
+import { GroupContext } from "../common/context/group-context";
 
 const KeyboardWrapper = styled.div`
   display: flex;
@@ -40,7 +39,7 @@ const KeyboardRow = styled.div`
   }
 `;
 
-const KeyboardBtn = styled.button`
+const KeyboardButton = styled.button`
   width: 50px;
   height: 55px;
 
@@ -55,31 +54,34 @@ interface Props {
 const Keyboard = (props: Props) => {
   const dispatch = useDispatch();
 
-  const group = useSelector((state: State) => state.group);
-  const groupFromProfile = useSelector((state: State) => state.profile.groups.find(g => g.id === group.id));
+  const groups = useSelector((state: State) => state.profile.groups);
 
-  const addKeyToGroup = (key: Key) => {
+  const getGroupById = (id) => groups.find((group) => group.id === id);
+
+  const addKeyToGroup = (key: Key, group: Group) => {
     if (key.selected) return;
     if (!group.id) return;
 
     const payload: Key = { ...key, selected: true, color: group.color };
 
-    dispatch(G.addKeyGroup(payload));
+    // dispatch(G.addKeyGroup(payload));
     dispatch(P.updateGroup(group));
     dispatch(P.syncLayout(group));
   };
 
-  const deleteKeyFromGroup = (key: Key) => {
-    dispatch(P.deleteKey({key, group}));
+  const deleteKeyFromGroup = (key: Key, group: Group) => {
+    dispatch(P.deleteKey({ key, group }));
   };
 
-  const onClickFactory = (mode: EditorMode, key: Key) => {
+  const onClickFactory = (mode: EditorMode, key: Key, groupId: string) => {
+    const group = getGroupById(groupId);
+
     switch (mode) {
       case 0:
-        addKeyToGroup(key);
+        addKeyToGroup(key, group);
         break;
       case EditorMode.Delete:
-        deleteKeyFromGroup(key);
+        deleteKeyFromGroup(key, group);
         break;
     }
   };
@@ -87,22 +89,26 @@ const Keyboard = (props: Props) => {
   return (
     <ModeContext.Consumer>
       {({ mode }) => (
-        <KeyboardWrapper>
-          {props.layout.map((keyRow, index) => (
-            <KeyboardRow key={index}>
-              {keyRow.map((key, index) => (
-                <KeyboardBtn
-                  style={{ background: key.color }}
-                  key={index}
-                  className={key.className}
-                  onClick={() => onClickFactory(mode, key)}
-                >
-                  {key.name}
-                </KeyboardBtn>
+        <GroupContext.Consumer>
+          {({ groupId }) => (
+            <KeyboardWrapper>
+              {props.layout.map((keyRow, index) => (
+                <KeyboardRow key={index}>
+                  {keyRow.map((key, index) => (
+                    <KeyboardButton
+                      style={{ background: key.color }}
+                      key={index}
+                      className={key.className}
+                      onClick={() => onClickFactory(mode, key, groupId)}
+                    >
+                      {key.name}
+                    </KeyboardButton>
+                  ))}
+                </KeyboardRow>
               ))}
-            </KeyboardRow>
-          ))}
-        </KeyboardWrapper>
+            </KeyboardWrapper>
+          )}
+        </GroupContext.Consumer>
       )}
     </ModeContext.Consumer>
   );

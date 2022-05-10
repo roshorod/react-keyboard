@@ -1,6 +1,6 @@
 import React from "react";
 
-import { EditorMode } from "./data/editor-mode";
+import { EditorMode } from "../../data/editor-mode";
 
 interface Props {
     mode: EditorMode;
