@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
 
-import { Profile as P } from "../common/profile";
-import { Group as G } from "../common/group";
+import * as P from "../common/profile/profileSlice";
+import * as G from "../common/group/groupSlice";
 
 import { v4 as uuidv4 } from "uuid";
 

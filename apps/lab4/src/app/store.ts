@@ -1,13 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { Profile, ProfileList } from "./common/profile";
-import { Group } from "./common/group";
+import * as P from "./common/profile/profileSlice";
+import * as PL from "./common/profile/profileListSlice";
+import * as G from "./common/group/groupSlice";
 
 const store = configureStore({
   reducer: {
-    profile: Profile.reducer,
-    group: Group.reducer,
-    profileList: ProfileList.reducer,
+    profile: P.reducer,
+    group: G.reducer,
+    profileList: PL.reducer,
   },
 });
 

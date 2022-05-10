@@ -5,6 +5,9 @@ import pen from "../../assets/brush-outline.svg";
 import del from "../../assets/trash-2-outline.svg";
 import { useState } from "react";
 
+import { EditorMode } from "../data/editor-mode";
+import { ModeContext } from "../mode-context";
+
 const ToolBoxWrapper = styled.div`
   display: flex;
 
@@ -29,44 +32,36 @@ const ToolBoxWrapper = styled.div`
   }
 `;
 
-enum EditorMode {
-  Edit,
-  Draw,
-  Delete,
-}
-
 interface ToolBoxItem {
   image: string;
   mode: EditorMode;
 }
 
 const ToolBoxItems: ToolBoxItem[] = [
-  { image: edit, mode: EditorMode.Edit },
   { image: pen, mode: EditorMode.Draw },
   { image: del, mode: EditorMode.Delete },
 ];
 
 const ToolBox = () => {
   const [items] = useState(ToolBoxItems);
-  const [mode, setMode] = useState(EditorMode.Edit);
-
-  const changeModeClick = (mode: EditorMode) => {
-    setMode(mode);
-  };
 
   return (
-    <ToolBoxWrapper>
-      {items.map((item: ToolBoxItem, idx) => {
-        return (
-          <img
-            key={idx}
-            src={item.image}
-            className={mode === item.mode ? "active" : ""}
-            onClick={() => changeModeClick(item.mode)}
-          />
-        );
-      })}
-    </ToolBoxWrapper>
+    <ModeContext.Consumer>
+      {({ mode, changeMode }) => (
+        <ToolBoxWrapper>
+          {items.map((item: ToolBoxItem, idx) => {
+            return (
+              <img
+                key={idx}
+                src={item.image}
+                className={mode === item.mode ? "active" : ""}
+                onClick={() => changeMode(item.mode)}
+              />
+            );
+          })}
+        </ToolBoxWrapper>
+      )}
+    </ModeContext.Consumer>
   );
 };
 

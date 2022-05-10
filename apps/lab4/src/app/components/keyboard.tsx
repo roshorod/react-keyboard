@@ -1,10 +1,12 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
-import { Group } from "../common/group";
-import * as Layout from "../layouts";
-import { Profile } from "../common/profile";
+
+import * as G from "../common/group/groupSlice";
+import * as P from "../common/profile/profileSlice";
+
+import { ModeContext } from "../mode-context";
+import { EditorMode } from "../data/editor-mode";
 
 const KeyboardWrapper = styled.div`
   display: flex;
@@ -61,29 +63,47 @@ const Keyboard = (props: Props) => {
 
     const payload: Key = { ...key, selected: true, color: group.color };
 
-    dispatch(Group.addKeyGroup(payload));
-    dispatch(Profile.updateGroup(group));
-    dispatch(Profile.syncLayout(group));
+    dispatch(G.addKeyGroup(payload));
+    dispatch(P.updateGroup(group));
+    dispatch(P.syncLayout(group));
+  };
+
+  const deleteKeyFromGroup = (key: Key) => {
+    console.log("delete key")
+  };
+
+  const onClickFactory = (mode: EditorMode, key: Key) => {
+    switch (mode) {
+      case 0:
+        addKeyToGroup(key);
+        break;
+      case EditorMode.Delete:
+        deleteKeyFromGroup(key);
+        break;
+    }
   };
 
   return (
-    <KeyboardWrapper>
-      {props.layout.map((keyRow, index) => (
-        <KeyboardRow key={index}>
-          {keyRow.map((key, index) => (
-            <KeyboardBtn
-              data-selected={key.color}
-              style={{ background: key.color }}
-              key={index}
-              className={key.className}
-              onClick={() => addKeyToGroup(key)}
-            >
-              {key.name}
-            </KeyboardBtn>
+    <ModeContext.Consumer>
+      {({ mode }) => (
+        <KeyboardWrapper>
+          {props.layout.map((keyRow, index) => (
+            <KeyboardRow key={index}>
+              {keyRow.map((key, index) => (
+                <KeyboardBtn
+                  style={{ background: key.color }}
+                  key={index}
+                  className={key.className}
+                  onClick={() => onClickFactory(mode, key)}
+                >
+                  {key.name}
+                </KeyboardBtn>
+              ))}
+            </KeyboardRow>
           ))}
-        </KeyboardRow>
-      ))}
-    </KeyboardWrapper>
+        </KeyboardWrapper>
+      )}
+    </ModeContext.Consumer>
   );
 };
 

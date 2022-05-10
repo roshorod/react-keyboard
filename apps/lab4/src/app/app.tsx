@@ -8,14 +8,17 @@ import ToolBox from "./components/toolbox";
 import Group from "./components/group";
 import Profile from "./components/profile";
 
-import { Group as G } from "./common/group";
+import * as G from "./common/group/groupSlice";
 
 import * as L from "./layouts";
 
 import { ChromePicker } from "react-color";
 import { useEffect, useState } from "react";
-import { Profile as P, ProfileList as PL } from "./common/profile";
+import * as P from "./common/profile/profileSlice";
+import * as PL from "./common/profile/profileListSlice";
 
+import { ModeContext } from "./mode-context";
+import { EditorMode } from "./data/editor-mode";
 
 const AppWrapper = styled.div`
   display: grid;
@@ -76,6 +79,8 @@ function App() {
 
   const [color, setColor] = useState();
 
+  const [mode, setMode] = useState<EditorMode>(EditorMode.Draw);
+
   useEffect(() => {
     if (group?.color) {
       const payload = { ...group, color };
@@ -112,9 +117,10 @@ function App() {
       </Groups>
 
       <Center>
-        <ToolBox></ToolBox>
-
-        <Keyboard layout={layout} />
+        <ModeContext.Provider value={{ mode, changeMode: setMode }}>
+          <ToolBox></ToolBox>
+          <Keyboard layout={layout} />
+        </ModeContext.Provider>
       </Center>
     </AppWrapper>
   );

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { ProfileList as PL } from "../common/profile";
-import { Profile as P } from "../common/profile";
+import * as PL from "../common/profile/profileListSlice";
+import * as P from "../common/profile/profileSlice";
 import { State } from "../store";
 import add from "../../assets/plus-outline.svg";
 
