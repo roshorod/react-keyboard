@@ -98,7 +98,10 @@ const Group = () => {
     setEditable(true);
   };
 
-  const deleteGroup = (group: Group) => dispatch(P.deleteGroup(group));
+  const deleteGroup = (group: Group) => {
+    dispatch(P.deleteGroup(group));
+    // dispatch(G.selectGroup({ name: "", color: "", groupKeys: [] }));
+  };
 
   const startEdit = () => {
     setEditable(true);

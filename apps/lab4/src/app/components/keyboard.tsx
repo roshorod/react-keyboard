@@ -7,6 +7,7 @@ import * as P from "../common/profile/profileSlice";
 
 import { ModeContext } from "../mode-context";
 import { EditorMode } from "../data/editor-mode";
+import { useEffect } from "react";
 
 const KeyboardWrapper = styled.div`
   display: flex;
@@ -55,11 +56,11 @@ const Keyboard = (props: Props) => {
   const dispatch = useDispatch();
 
   const group = useSelector((state: State) => state.group);
+  const groupFromProfile = useSelector((state: State) => state.profile.groups.find(g => g.id === group.id));
 
   const addKeyToGroup = (key: Key) => {
-    console.log(key);
-
     if (key.selected) return;
+    if (!group.id) return;
 
     const payload: Key = { ...key, selected: true, color: group.color };
 
@@ -69,7 +70,7 @@ const Keyboard = (props: Props) => {
   };
 
   const deleteKeyFromGroup = (key: Key) => {
-    console.log("delete key")
+    dispatch(P.deleteKey({key, group}));
   };
 
   const onClickFactory = (mode: EditorMode, key: Key) => {

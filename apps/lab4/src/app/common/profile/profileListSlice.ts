@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { layout } from "../../layouts";
+import { UpdateProfiles } from "./reducers/profiles/update-profiles";
 
 
 const initialStateMap: Profile[] = [];
@@ -14,13 +15,7 @@ const profileListSlice = createSlice({
   initialState: preload,
   reducers: {
     updateProfiles: (state, action: PayloadAction<Profile>) => {
-      const profile = action.payload;
-
-      const updated = state.map((p) => (p.id === profile.id ? profile : p));
-
-      if (updated.length === 0) updated.push(profile);
-
-      Object.assign(state, updated);
+      UpdateProfiles(state, action.payload);
     },
 
     createProfile: (state) => {
