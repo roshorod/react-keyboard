@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { layout } from "../../layouts";
 import { SyncLayout } from "./reducers/layout/sync-layout";
 import { DeleteKey } from "./reducers/keys/delete-key";
+import { AddKey } from "./reducers/keys/add-key";
 
 const initialStateMap: Profile = {
   name: "profile-one",
@@ -36,8 +37,12 @@ const profileSlice = createSlice({
       SyncLayout(state, action.payload);
     },
 
-    deleteKey: (state, action: PayloadAction<{key, group}>) => {
+    deleteKey: (state, action: PayloadAction<{ key; group }>) => {
       DeleteKey(state, action.payload.key, action.payload.group);
+    },
+
+    addKey: (state, action: PayloadAction<{ key; group }>) => {
+      AddKey(state, action.payload.key, action.payload.group);
     },
 
     createGroup: (state, action) => {
@@ -60,5 +65,6 @@ export const {
   selectProfile,
   syncLayout,
   deleteKey,
+  addKey,
 } = profileSlice.actions;
 export const { reducer } = profileSlice;

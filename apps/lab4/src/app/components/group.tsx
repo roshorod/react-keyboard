@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
 
-import * as P from "../common/profile/profileSlice";
+import * as Profile from "../common/profile/profileSlice";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -72,19 +72,19 @@ const GroupItem = styled.div`
 const Group = () => {
   const dispatch = useDispatch();
 
-  const [editable, setEditable] = useState(true);
+  const [editable, setEditable] = useState(false);
 
   const editableInput = useRef(null);
 
   const groups = useSelector((state: State) => state.profile.groups);
 
-  const getGroupById = (id) => groups.find((group) => group.id === id);
+  const getGroupById = (id) => groups.find((group) => group.id === id || null);
 
   useEffect(() => {
-  if (editableInput?.current) editableInput.current.focus();
-  }, [editable, editableInput]);
+    if (editableInput?.current) editableInput.current.focus();
+  }, [editableInput, editable]);
 
-  const createGroup = () => {
+  const createGroup = (changeGroupId: Function) => {
     const payload: Group = {
       color: "white",
       name: "new group",
@@ -92,15 +92,17 @@ const Group = () => {
       groupKeys: [],
     };
 
-    // dispatch(G.selectGroup(payload));
-    dispatch(P.createGroup(payload));
-
     setEditable(true);
+
+    dispatch(Profile.createGroup(payload));
+
+    changeGroupId(payload.id);
   };
 
-  const deleteGroup = (group: Group) => {
-    dispatch(P.deleteGroup(group));
-    // dispatch(G.selectGroup({ name: "", color: "", groupKeys: [] }));
+  const deleteGroup = (group: Group, changeGroupId: Function) => {
+    dispatch(Profile.deleteGroup(group));
+
+    changeGroupId(null);
   };
 
   const startEdit = () => {
@@ -115,16 +117,12 @@ const Group = () => {
 
   const selectGroup = (group: Group, changeGroupId: Function) => {
     changeGroupId(group.id);
-
-
-    // dispatch(P.updateGroup(selected));
-    // dispatch(G.selectGroup(group));
   };
 
-  const onChangeGroupName = (event) => {
+  const onChangeGroupName = (event, group: Group) => {
     event.preventDefault();
 
-    // dispatch(G.selectGroup({ ...selected, name: event.target.value }));
+    dispatch(Profile.updateGroup({ ...group, name: event.target.value }));
   };
 
   return (
@@ -153,7 +151,7 @@ const Group = () => {
                       ref={editableInput}
                       type="text"
                       value={getGroupById(groupId).name}
-                      onChange={(e) => onChangeGroupName(e)}
+                      onChange={(e) => onChangeGroupName(e, item)}
                       onBlur={stopEdit}
                     />
                   ) : (
@@ -162,12 +160,18 @@ const Group = () => {
                     </span>
                   )}
 
-                  <img src={del} onClick={() => deleteGroup(item)} />
+                  <img
+                    src={del}
+                    onClick={() => deleteGroup(item, changeGroupId)}
+                  />
                 </GroupItem>
               );
             })}
 
-            <GroupItem className="group-item-new" onClick={createGroup}>
+            <GroupItem
+              className="group-item-new"
+              onClick={() => createGroup(changeGroupId)}
+            >
               <span>Add new </span>
               <img src={add} />
             </GroupItem>

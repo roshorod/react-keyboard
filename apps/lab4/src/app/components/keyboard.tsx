@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { State } from "../store";
 
-import * as P from "../common/profile/profileSlice";
+import * as Profile from "../common/profile/profileSlice";
 
 import { ModeContext } from "../common/context/mode-context";
 import { EditorMode } from "../data/editor-mode";
@@ -56,24 +56,22 @@ const Keyboard = (props: Props) => {
 
   const groups = useSelector((state: State) => state.profile.groups);
 
-  const getGroupById = (id) => groups.find((group) => group.id === id);
+  const getGroupById = (id) => groups.find((group) => group.id === id || null);
 
   const addKeyToGroup = (key: Key, group: Group) => {
     if (key.selected) return;
     if (!group.id) return;
 
-    const payload: Key = { ...key, selected: true, color: group.color };
-
-    // dispatch(G.addKeyGroup(payload));
-    dispatch(P.updateGroup(group));
-    dispatch(P.syncLayout(group));
+    dispatch(Profile.addKey({ key, group }));
   };
 
   const deleteKeyFromGroup = (key: Key, group: Group) => {
-    dispatch(P.deleteKey({ key, group }));
+    dispatch(Profile.deleteKey({ key, group }));
   };
 
   const onClickFactory = (mode: EditorMode, key: Key, groupId: string) => {
+    if (!groupId) return;
+
     const group = getGroupById(groupId);
 
     switch (mode) {

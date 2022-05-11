@@ -5,6 +5,7 @@ import * as PL from "../common/profile/profileListSlice";
 import * as P from "../common/profile/profileSlice";
 import { State } from "../store";
 import add from "../../assets/plus-outline.svg";
+import { GroupContext } from "../common/context/group-context";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -43,23 +44,32 @@ const Profile = (props: Props) => {
 
   const addProfile = () => dispatch(PL.createProfile());
 
-  const changeProfile = (event) => {
+  const changeProfile = (event, changeGroupId: Function) => {
     const id = event.target.value;
 
     setProfile(profiles.find((profile) => profile.id === id));
+    changeGroupId(null);
   };
 
   return (
-    <ProfileWrapper>
-      <select name="profiles" value={profile.id} onChange={changeProfile}>
-        {profiles.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-          </option>
-        ))}
-      </select>
-      <img src={add} onClick={addProfile} />
-    </ProfileWrapper>
+    <GroupContext.Consumer>
+      {({ changeGroupId }) => (
+        <ProfileWrapper>
+          <select
+            name="profiles"
+            value={profile.id}
+            onChange={(event) => changeProfile(event, changeGroupId)}
+          >
+            {profiles.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+          <img src={add} onClick={addProfile} />
+        </ProfileWrapper>
+      )}
+    </GroupContext.Consumer>
   );
 };
 

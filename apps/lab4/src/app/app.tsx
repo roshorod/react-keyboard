@@ -76,20 +76,22 @@ function App() {
 
   const [_groupId, _setGroupId] = useState<string | null>(null);
 
-  const _group = useSelector((state: State) => state.profile.groups.find(group => group.id == _groupId))
+  const _group = useSelector(
+    (state: State) =>
+      state.profile.groups.find((group) => group.id == _groupId) || null
+  );
 
   const [mode, setMode] = useState<EditorMode>(EditorMode.Draw);
 
   useEffect(() => {
     if (_groupId) {
-      dispatch(P.updateGroup({..._group, color}));
-      // dispatch(P.syncLayout())
+      dispatch(P.updateGroup({ ..._group, color }));
+      dispatch(P.syncLayout(_group));
     }
   }, [color]);
 
   useEffect(() => {
     dispatch(P.updateLayout(layout));
-          // dispatch(P.syncLayout())
   }, [_group]);
 
   useEffect(() => {

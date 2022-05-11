@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import { layout } from "../../layouts";
 import { UpdateProfiles } from "./reducers/profiles/update-profiles";
 
-
 const initialStateMap: Profile[] = [];
 
 const preload: Profile[] = localStorage.getItem("reduxState")
@@ -19,10 +18,15 @@ const profileListSlice = createSlice({
     },
 
     createProfile: (state) => {
-      const signature: Profile = { id: uuidv4(), name: "profile-template", layout, groups: [] };
+      const signature: Profile = {
+        id: uuidv4(),
+        name: "profile-template",
+        layout,
+        groups: [],
+      };
 
       state.push(signature);
-    }
+    },
   },
 });
 
