@@ -78,7 +78,7 @@ body {
     filter: invert(56%) sepia(82%) saturate(2477%) hue-rotate(62deg) brightness(109%) contrast(103%) !important;
 }
 
-.group-item-new {
+.group-item--new {
     cursor: pointer;
 }
 

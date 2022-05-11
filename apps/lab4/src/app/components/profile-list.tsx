@@ -24,18 +24,18 @@ const ProfileWrapper = styled.div`
 `;
 
 interface Props {
-  profile: Profile;
+  defaultProfile: Profile;
 }
 
-const Profile = (props: Props) => {
+const ProfileList = (props: Props) => {
   const dispatch = useDispatch();
 
-  const [profile, setProfile] = useState(props.profile);
+  const [profile, setProfile] = useState(props.defaultProfile);
 
   const profiles = useSelector((state: State) => state.profileList);
 
   useEffect(() => {
-    dispatch(PL.updateProfiles(props.profile));
+    dispatch(PL.updateProfiles(props.defaultProfile));
   }, [props]);
 
   useEffect(() => {
@@ -48,6 +48,7 @@ const Profile = (props: Props) => {
     const id = event.target.value;
 
     setProfile(profiles.find((profile) => profile.id === id));
+    
     changeGroupId(null);
   };
 
@@ -73,4 +74,4 @@ const Profile = (props: Props) => {
   );
 };
 
-export default Profile;
+export default ProfileList;

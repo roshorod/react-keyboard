@@ -69,8 +69,12 @@ const Keyboard = (props: Props) => {
     dispatch(Profile.deleteKey({ key, group }));
   };
 
-  const onClickFactory = (mode: EditorMode, key: Key, groupId: string) => {
-    if (!groupId) return;
+  const onClickFactory = (
+    mode: EditorMode,
+    key: Key,
+    groupId: string | null
+  ) => {
+    if (groupId === null) return;
 
     const group = getGroupById(groupId);
 
