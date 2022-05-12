@@ -98,6 +98,7 @@ const Keyboard = (props: Props) => {
                 <KeyboardRow key={index}>
                   {keyRow.map((key, index) => (
                     <KeyboardButton
+                      // style={{ boxShadow: `0 0 10px ${key.color}`, color: key.color}}
                       style={{ background: key.color }}
                       key={index}
                       className={key.className}
